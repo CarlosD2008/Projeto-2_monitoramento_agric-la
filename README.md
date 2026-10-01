@@ -2,6 +2,8 @@
 
 Projeto de IoT para monitoramento de uma mini-estufa agrícola usando **ESP32 + DHT22 + LDR + LEDs + Buzzer + Wi-Fi + ThingSpeak**.
 
+# link do projeto no Wokwi. https://wokwi.com/projects/476135821618994177
+
 ## 🎯 Objetivo
 
 Monitorar:
