@@ -1,152 +1,177 @@
 # 🌱 Estufa IoT
 
-Projeto de IoT para monitoramento de uma mini-estufa agrícola usando **ESP32 + DHT22 + LDR + LEDs + Buzzer + Wi-Fi + ThingSpeak**.
+<div align="center">
 
-### link do projeto no Wokwi. https://wokwi.com/projects/476135821618994177
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:16a085,100:2ecc71&height=160&section=header&text=🌱%20Estufa%20IoT&fontSize=40&fontColor=fff&animation=fadeIn" width="100%"/>
 
-## 🎯 Objetivo
+### 🤖 Monitoramento inteligente de uma miniestufa com ESP32
 
-Monitorar:
+<img src="https://img.shields.io/badge/ESP32-IoT-2ecc71?style=for-the-badge&logo=espressif&logoColor=white"/>
+<img src="https://img.shields.io/badge/DHT22-Temperatura%20%7C%20Umidade-orange?style=for-the-badge"/>
+<img src="https://img.shields.io/badge/LDR-Luminosidade-yellow?style=for-the-badge"/>
+<img src="https://img.shields.io/badge/ThingSpeak-Cloud-purple?style=for-the-badge"/>
 
-- 🌡️ Temperatura
-- 💧 Umidade
-- ☀️ Luminosidade
-- 🚨 Situação de alerta
+<br><br>
 
-O sistema sinaliza a condição por LEDs e buzzer e pode enviar os dados para o ThingSpeak.
+<a href="https://wokwi.com/projects/476135821618994177">
+<img src="https://img.shields.io/badge/▶️%20SIMULAR%20NO%20WOKWI-27ae60?style=for-the-badge"/>
+</a>
+
+</div>
+
+---
+
+## 🌱 Sobre
+
+Projeto de **IoT agrícola** desenvolvido com **ESP32** para monitorar uma miniestufa em tempo real.
+
+O sistema verifica:
+
+* 🌡️ Temperatura
+* 💧 Umidade
+* ☀️ Luminosidade
+* 🚨 Condições de alerta
+
+Quando algum valor está fora do limite, o sistema ativa **LED vermelho + buzzer**.
+
+---
+
+## ⚙️ Como funciona?
+
+```text
+🌡️ DHT22 ──┐
+💧 DHT22 ──┤
+☀️ LDR ────┤
+           ↓
+       🧠 ESP32
+           ↓
+    ┌──────┴──────┐
+    ↓             ↓
+ 🟢 NORMAL     🔴 ALERTA
+    ↓             ↓
+ LED Verde    LED Vermelho
+                +
+             🔊 Buzzer
+           │
+           ↓
+       ☁️ ThingSpeak
+```
+
+---
+
+## 🧠 Regras do Sistema
+
+| Monitoramento   | Normal            | Alerta               |
+| --------------- | ----------------- | -------------------- |
+| 🌡️ Temperatura | `18°C – 30°C`     | Fora do limite       |
+| 💧 Umidade      | `40% – 80%`       | Fora do limite       |
+| ☀️ LDR          | Iluminação normal | `DO = HIGH` / escuro |
+
+### 🟢 Normal
+
+`LED Verde ON` • `LED Vermelho OFF` • `Buzzer OFF`
+
+### 🔴 Alerta
+
+`LED Verde OFF` • `LED Vermelho ON` • `Buzzer ON`
+
+---
 
 ## 🔌 Ligações
 
-| Componente | ESP32 |
-|---|---:|
-| DHT22 DATA | GPIO 15 |
-| LDR AO | GPIO 34 |
-| LDR DO | GPIO 13 |
-| LED verde | GPIO 2 |
-| LED vermelho | GPIO 4 |
-| Buzzer | GPIO 5 |
-| DHT22 VCC | 3V3 |
-| LDR VCC | 3V3 |
-| GNDs | GND |
+| Componente      | GPIO |
+| --------------- | ---- |
+| 🌡️ DHT22       | `15` |
+| ☀️ LDR AO       | `34` |
+| ☀️ LDR DO       | `13` |
+| 🟢 LED Verde    | `2`  |
+| 🔴 LED Vermelho | `4`  |
+| 🔊 Buzzer       | `5`  |
 
-## 🧠 Regras
+**VCC → 3V3** • **GND → GND** • **LEDs → resistor 220Ω**
 
-- Temperatura normal: 18°C a 30°C
-- Umidade normal: 40% a 80%
-- LDR DO HIGH = escuro = alerta
-- Qualquer condição fora dos limites gera alerta.
-- Normal: LED verde ligado e buzzer desligado.
-- Alerta: LED vermelho ligado e buzzer ligado.
+---
 
-## 🧪 Condição inicial do Wokwi
+## 🧪 Teste Rápido
 
-- Temperatura: 25°C
-- Umidade: 60%
-- LDR: 400 lux
-
-Esperado:
+### 🟢 Estado inicial
 
 ```text
-NORMAL
-LED VERDE = ligado
-LED VERMELHO = desligado
-BUZZER = desligado
+🌡️ 25°C
+💧 60%
+☀️ 400 lux
+
+       ↓
+
+🟢 NORMAL
 ```
 
-## 🧪 Testes
+### 🔴 Teste de alerta
 
-### Teste de temperatura
-
-No DHT22, altere para:
+Altere qualquer condição:
 
 ```text
-35°C
+🌡️ 35°C  → 🚨 ALERTA
+💧 20%   → 🚨 ALERTA
+🌑 Escuro → 🚨 ALERTA
 ```
 
-Esperado:
-
-```text
-ALERTA
-Motivos: temperatura
-LED vermelho ligado
-Buzzer ligado
-```
-
-### Teste de umidade
-
-Altere para:
-
-```text
-20%
-```
-
-Esperado:
-
-```text
-ALERTA
-Motivos: umidade
-```
-
-### Teste de luminosidade
-
-Altere o nível de luz do LDR para uma condição escura.
-
-Esperado:
-
-```text
-ALERTA
-Motivos: luminosidade
-```
+---
 
 ## ☁️ ThingSpeak
 
-O código já está preparado para enviar:
+Os dados podem ser enviados para a nuvem:
 
-- Field 1 = temperatura
-- Field 2 = umidade
-- Field 3 = luminosidade (%)
-- Field 4 = status (0 normal / 1 alerta)
-
-Para habilitar:
+```text
+Field 1 → 🌡️ Temperatura
+Field 2 → 💧 Umidade
+Field 3 → ☀️ Luminosidade
+Field 4 → 🚨 Status
+```
 
 ```cpp
 const char* THINGSPEAK_API_KEY = "SUA_WRITE_API_KEY";
 ```
 
-A URL correta usada pelo ESP32 é:
+Sem API Key, o projeto continua funcionando normalmente no **Wokwi**.
+
+---
+
+## ▶️ Executar
+
+1. Abra o projeto no **Wokwi**.
+2. Configure `sketch.ino`.
+3. Configure `diagram.json`.
+4. Em `libraries.txt`, adicione:
 
 ```text
-http://api.thingspeak.com/update
+DHTesp
 ```
 
-Sem uma API Key, o projeto continua funcionando localmente.
-
-## ▶️ Como importar no Wokwi
-
-1. Crie um projeto **ESP32** no Wokwi.
-2. Substitua o conteúdo de `sketch.ino`.
-3. Substitua o conteúdo de `diagram.json`.
-4. Crie/atualize `libraries.txt` com:
-   `DHTesp`
 5. Inicie a simulação.
-6. Abra o Serial Monitor em **115200 baud**.
+6. Abra o **Serial Monitor — 115200 baud**.
 
-## ✅ Checklist de validação
+---
 
-- [x] DHT22 no GPIO 15
-- [x] LDR AO no GPIO 34
-- [x] LDR DO no GPIO 13
-- [x] LED verde no GPIO 2
-- [x] LED vermelho no GPIO 4
-- [x] Buzzer no GPIO 5
-- [x] Resistores de 220 ohms nos LEDs
-- [x] Wi-Fi Wokwi-GUEST
-- [x] URL ThingSpeak corrigida
-- [x] JSON sem escapes inválidos
-- [x] LED verde sem atributo `flip`
-- [x] DHTesp declarado em `libraries.txt`
-- [x] Envio cloud a cada 15 segundos
+## 🛠️ Tecnologias
 
-> Observação: a simulação local funciona sem ThingSpeak. O envio para a nuvem depende de uma Write API Key válida.
+<div align="center">
 
+`ESP32` • `C++` • `DHT22` • `LDR` • `Wi-Fi` • `ThingSpeak` • `Wokwi`
 
+</div>
+
+---
+
+<div align="center">
+
+### 🌱 Sensores → 🧠 ESP32 → 🚨 Decisão → ☁️ Cloud
+
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:16a085,100:2ecc71&height=100&section=footer&animation=fadeIn" width="100%"/>
+
+**Desenvolvido por Carlos Daniel**
+
+### link o projeto: 
+https://wokwi.com/projects/476135821618994177
+
+</div>
